@@ -1,0 +1,427 @@
+
+#主要用途
+/boot  存放系统引导必须的文件，包括内核、启动配置
+/bin、/sbin  主要用途存放基本命令、管理工具
+/dev   存放各种设备文件
+/etc   存放系统中的各种配置文件
+/usr   存放共用的、只读的用户数据
+/root  管理员root的家目录(默认的工作目录)
+/home  存放各普通用户的家目录(比如 /home/zhangsan)
+/var   存放日志文件、邮箱目录等经常变化的文件
+/proc  存放内存中的映射数据，不占用磁盘
+/tmp   存放系统运行中过程中的一些临时文件
+
+搭建教学环境
+1.真机搭建ftp服务
+rpm ivh vsftpd
+
+[root@room9pc01 ~]# systemctl restart vsftpd
+[root@room9pc01 ~]# systemctl enable vsftpd
+
+2.
+
+
+3.共享光盘所有内容
+默认共享：/var/ftp
+服务端1.众多的软件包 2.仓库清单文件 3.共享的服务
+vim /etc/fstab 
+/var/lib/libvirt/images/iso/rhel-server-7.4-x86_64-dvd.iso  /var/ftp/rhel7 iso9660 defaults 0 0
+ls /var/ftp/rhel7/
+firefox ftp://127.0.0.1/rhel7
+
+
+
+
+利用root进行登陆，密码为123456
+虚拟机A：
+1主机名：svr7.tedu。cn
+2配置ip地址：192.168.4.7/24
+虚拟机B：
+1主机名：pc207.tedu。cn
+2配置ip地址：192.168.4.207/24
+
+clone-auto7  快速产生多台hrle7虚拟机
+
+永久配IP
+nmcli connection modify eth0
+ipv4.method manual 
+ipv4.addresses '192.168.4.7' 
+connection.autoconnect yes
+
+搭yum
+[rhel7]
+name=rhel7
+baseurl=ftp://192.168.4.254/rhel7
+enabled=1
+gpgcheck=0
+
+scp /etc/yum.repos.d/rhel7.repo root@192.168.4.207:/etc/yum.repos.d/
+
+
+tar -xf /root/tools.tar.gz -C /
+生成仓库数据文件
+createrepo /tools/other/
+
+baseurl=file:///tools/other   指定本地为yum服务端
+
+oneko &   放入后台
+
+
+:r /etc/files
+
+域名体系：
+所有的域名，都要以点结尾（称为 根域名）
+根. 
+一级域名： .cn .kr .hk .tw .jp .us .com  .net .org ...
+二级域名：.com.cn .edu.cn .net.cn .gov.cn .mil.cn ....
+三级域名：.dawai.com.cn  .nb.com.cn  .haxi.com.cn  ...
+完整主机名：www.dawai.com.cn  ftp.dawai.com.cn  tts.dawai.com.cn
+
+IANA，互联网数字分配机构
+
+搭建基本的DNS服务
+yum -y install bind-chroot bind 
+ bind.x86_64 32:9.9.4-50.el7          #域名服务包
+ bind-chroot.x86_64 32:9.9.4-50.el7   #提供虚拟根支持
+
+主配置文件：/etc/named.conf   #设置本机负责解析的域名
+地址库文件：/var/named        #所有完整的主机名与IP对应关系
+
+vim /etc/named.conf
+
+options {
+        directory       "/var/named";
+};
+zone "tedu.cn" IN {
+        type master;
+        file "tedu.cn.zone";
+};
+
+cp -p named.localhost tedu.cn.zone
+
+vim tedu.cn.zone
+
+echo nameserver 192.168.4.7 > /etc/resolv.conf
+
+tedu.cn.    NS   svr7
+svr7        A    192.168.4.7
+www         A    1.2.3.4
+ftp         A    5.6.7.8
+
+systemctl restart named
+
+nslookup www.tedu.cn
+
+多区域DNS服务器
+虚拟机A
+1.修改配置文件/etc/named.conf
+vim /etc/named.conf
+
+options {
+        directory "/var/named";
+};
+zone "tedu.cn" IN {
+        type master;
+        file "tedu.cn.zone";
+};
+zone "qq.com" IN {
+        type master;
+        file "qq.com.zone";
+};
+
+2.建立地址库文件/var/named/qq.com.zone
+
+cp -p /var/named/named.localhost /var/named/qq.com.zone
+
+vim qq.com.zone
+
+qq.com.     NS   svr7
+svr7        A    192.168.4.7
+www         A    2.2.2.2
+ftp         A    3.3.3.3
+
+systemctl restart named
+
+nslookup www.tedu.cn
+nslookup qq.com.zone
+
+
+特殊解析记录
+1.DNS负载均衡
+
+2.泛域名解析
+qq.com.    NS   svr7
+svr7        A    192.168.4.7
+www         A    1.2.3.4
+ftp         A    5.6.7.8
+*           A    12.12.12.12
+tts   CNAME  ftp
+$GENERATE  1-50  pc$  A  192.168.10.$
+
+DNS子域授权
+父域：www.tedu.com
+子域：www.bj.tedu.com 
+     www.sh.tedu.com 
+     www.cd.tedu.com 
+
+虚拟机A负责解析 父域  www.tedu.com
+
+yum -y install bind bind-chroot
+vim /etc/named.conf
+
+options {
+        directory "/var/named";
+};
+zone "tedu.cn" IN {
+        type master;
+        file "tedu.cn.zone";
+};
+
+cp -p /var/named/named.localhost /var/named/tedu.cn.zone
+
+vim /var/named/tedu.cn.zone
+
+qq.com.    NS   svr7
+svr7        A    192.168.4.7
+www         A    1.2.3.4
+
+systemctl restart named
+nslookup www.tedu.cn 
+
+虚拟机B负责解析 子域  www.bj.tedu.com 
+
+yum -y install bind bind-chroot
+vim /etc/named.conf
+
+options {
+        directory "/var/named";
+};
+zone "bj.tedu.cn" IN {
+        type master;
+        file "bj.tedu.cn.zone";
+};
+
+cp -p /var/named/named.localhost /var/named/bj.tedu.cn.zone
+
+vim /var/named/bj.tedu.cn.zone
+
+qq.com.    NS   pc207
+pc207      A    192.168.4.207
+www        A    2.2.2.2
+
+systemctl restart named
+nslookup www.bj.tedu.cn 192.168.4.207
+
+搭建缓存DNS
+cat /etc/resolv.conf
+vim /etc/named.conf
+systemctl restart named
+nslookup www.qq.com 192.168.4.254
+
+
+DNS分离解析
+split分离解析（视图解析）
+当收到客户机的DNS查询请求的时侯
+能够区分客户机的来源地址
+为不同类别的客户机提供不同的解析结果（IP地址）
+判断客户端的来源，不同的客户端解析同一个域名得到的解析结果不同
+针对不同的客户机就近提供服务器
+
+view“铁桶”
+match-client {来源地址1；....;}；
+zone '12306.cn' IN {
+地址2.....};
+
+
+view "other"
+match-client {192.168.4.100；}；
+zone '12306.cn' IN {
+地址2.....};
+
+
+
+
+DHCP概述原理     动态主机配置协议      用来简化主机地址分配管理
+主要分配以下入网参数
+IP地址/子网掩码/广播地址
+默认网关地址、DNS服务器地址
+安装软件包  dhcp
+vim /etc/dhcp/dhcpd.conf
+末行模式读入 ：r  /usr/share/doc/dhcp*/dhcpd.conf.example
+subnet 192.168.4.0 netmask 255.255.255.0 {
+  range 192.168.4.100 192.168.4.200;
+  option domain-name-servers 192.168.4.7;
+  option routers 192.168.4.254;
+  default-lease-time 600;
+  max-lease-time 7200;
+  next-server  192.168.4.7;   #指定下一个服务器
+  filename  "pxelinux.0";     #指定网卡引导文件名称
+}
+
+systemctl restart dhcpd
+
+
+网络装机：
+网络装机的优势
+规模化：同时装配多台主机
+自动化：装系统、配置各种服务
+远程实现：不需要光盘、U盘等物理安装介质
+
+什么时PXE网络
+预启动执行环境，在操作系统之前运行
+
+
+搭建tftp服务
+tftp   /var/tftp
+安装软件包tftp-server
+
+systemctl restart tftp
+
+yum -y install syslinux
+
+cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+
+
+部署菜单文件
+mkdir /var/lib/tftpboot/pxelinux.cfg
+
+添加镜像文件
+mount /dev/cdrom /mnt
+
+cp /mnt/isolinux/isolinux.cfg /var/lib/tftpboot/pxelinux.cfg/default
+
+ls -l /var/lib/tftpboot/pxelinux.cfg/default
+
+chmod u+w /var/lib/tftpboot/pxelinux.cfg/default
+
+ls -l /var/lib/tftpboot/pxelinux.cfg/default
+
+
+部署驱动程序和启动内核（引导文件）
+vesamenu.c32 图形模块、颜色、呈现背景图片
+vmlinuz       启动内核
+initrd.img    驱动程序
+splash.png    黑色背景图片
+
+cp /mnt/isolinux/vesamenu.c32 
+   /mnt/isolinux/vmlinuz 
+   /mnt/isolinux/initrd.img 
+   /mnt/isolinux/splash.png    /var/lib/tftpboot/
+ls /var/lib/tftpboot/
+initrd.img  pxelinux.0  pxelinux.cfg  splash.png  vesamenu.c32  vmlinuz
+
+
+修改菜单内容
+vim /var/lib/tftpboot/pxelinux.cfg/default
+
+1 default vesamenu.c32  默认加载图形模块
+2 timeout 600           默认读秒
+10 menu background splash.png   指定默认背景图片
+11 menu title NSD1806 PXE Server    指定菜单的标题
+61 label linux
+62   menu label ^Install RHEL7         菜单显示内容
+63   kernel vmlinuz               加载内核
+64   append initrd=initrd.img         加载驱动程序
+65以下都不要
+
+总结：
+      dhcp---》IP地址、next-server、filename
+      tftp---》pxelinux.0
+      pxelinux.0---》/var/lib/tftpboot/pxelinux.cfg/default
+      default---》vesamenu.c32\vmlinuz\initrd.img\splash.png
+      ks=http://192.168.4.7/rhel7
+初步测试：
+新建虚拟机 选择PXE网络引导安装
+选择网络类型
+
+
+
+搭建httpd服务，利用web共享众多的rpm包
+yum -y install httpd
+
+创建共享目录
+mkdir /var/www/html/rhel7
+
+mount /dev/cdrom /var/www/html/rhel7/
+
+ls /var/www/html/rhel7/
+
+firefox 192.168.4.7/rhel7
+
+
+部署无人值守安装，生成应答文件
+图形生成应答文件工具
+安装软件包system-config-kickstart
+
+运行system-config-kickstart
+
+
+共享ks文件，传递给客户端
+cp /root/ks.cfg /var/www/html/
+
+
+修改菜单文件，指定ks应答文件
+vim  /var/lib/tftpboot/pxelinux.cfg/default
+
+append initrd=initrd.img ks=http://192.168.4.7/ks.cfg
+
+
+安装centOS7虚拟机
+1.图形方式进行安装
+2.磁盘大小 50Ghttp://tts.tmooc.cn/ttsPage/LINUX/NSDTN201801/SERVICES/DAY05/COURSE/LINUXNSD_V01SERVICESDAY05_006.png
+3.网络类型prviate1
+4.分区选择自动分区
+5.软件包的选择“带GUI服务器”
+6.内存2G
+
+
+rsync同步操作
+rsync  [选项]  源目录  目标目录
+同步与复制的差异
+复制：完全拷贝源到目标
+同步：增量拷贝，只传输变化过的数据
+
+-r:递归
+-v：显示详细操作信息
+-a：归档模式
+-z：传输过程中启用压缩/解压
+
+
+
+
+rhle7：运行模式
+
+修改默认运行模式
+systemctl set-default graphical.target
+查看默认运行模式
+systemctl get-default
+
+切换图形模式
+systemctl isolate graphical.target 
+切换字符模式
+systemctl isolate multi-user.target
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

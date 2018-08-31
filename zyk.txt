@@ -1,0 +1,1264 @@
+
+day01
+点击“未列出”-----> 用户名：root     密码：    Taren1
+
+C/S架构： C= Client 客户端，S=Server  服务端
+
+TCP/IP协议是最广泛支持的通讯协议的集合
+
+TCP/IP的三要素： 语法，语义，同步
+
+主机与主机之间通讯的三个要素：IP地址，子网掩码，IP路由
+
+ipv4=32位(二进制)  是由32个二进制位组成，表示为4个10进制以点分隔，192.168.0.1   11111111.11111111.11111111.11111111
+ipv6=128位(二进制) 			255.255.255.255
+
+IP地址：用来标示一个节点的网络地址。
+IP地址分为    网络位+主机位
+
+通讯类型：	单播，组播，广播
+A类：1-126              网+主+主+主 	   255.0.0.0		10.1.1.0/8
+B类：128-191		网+网+主+主        255.255.0.0  	191.1.1.0/16
+C类：192-223		网+网+网+主	   255.255.255.0	192.168.0.0/24
+D类：224-239(组播)
+E类：240-254(科研)
+
+route  查看网段
+vim /etc/resolv.conf   DNS
+删除所有，写上nameserver  DNS地址
+
+192.168.1.1    
+192.168.1.2
+win2008   192.168.1.1/24 
+win2008   192.168.1.2/24
+ 
+cmd----->ipconfig---->命令查看windows的IP地址
+ping 192.168.1.2----->测试能否通讯
+
+
+day02
+MBR:最多支持4个主分区，想要更多的分区需要划分扩展分区（三主+一扩+N个逻辑分区），在扩展分区基础上划分逻辑分区，最大支持划分的硬盘空间是2.2T
+
+文件系统：ext4（RJEL6） xfs（RJEL7）
+        SWAP：交换空间（虚拟内存）真实的内存空间不足的情况下，swap可以模拟出来一部分内存空间来供电脑使用
+linux目录结构：
+最顶层为根目录（/）
+根目录（/）：linux所有数据都在此目录下（linux系统的起点）
+
+GPT：不限制分区个数，最大支持的硬盘空间是EB级
+
+/dev：所有设备相关的文件
+
+IDE : /dev/hda    ide设备的第一块硬盘
+	/dev/hda1   ide设备的第一块硬盘第一个分区
+	/dev/hda2	ide设备的第一块硬盘第二个分区
+	/dev/hda3
+	/dev/hda4	(扩展分区)
+	/dev/hda5	ide设备的第一块硬盘第一个逻辑分区
+	/dev/hdb    ide设备的第二块硬盘
+
+scsi：  /dev/sda	scsi设备的第一块硬盘
+	 /dev/sdb	scsi设备的第二块硬盘
+       /dev/sdb3   scsi设备的第二块硬盘的第三个分区
+       /dev/hda5	IDE设备的第一块硬盘的第以逻辑分区
+vd：虚拟化设备（只在虚拟机出现）
+
+文件系统
+linux：    redhat6及之前  ：  EXT2/3/4 
+	    redhat 7： XFS
+
+命令行确认许可协议：1--->2--->c--->c
+
+点击“未列出”-----> 用户名：root    密码：    Taren1
+
+[root@room9pc01 ~]#
+[当前登陆的用户名@当前所在的主机名  当前所在的系统位置] 
+～代表所在的位置当前登陆用户的家目录
+# 管理员用户登陆标示符
+$ 普通用户登陆标示符
+					
+命令行格式：
+命令字   [选项]…   [参数1] [参数2]…
+[root@svr6 ~]# ls     -l     /home      
+[用户名@主机名]#   命令字     选项       参数1             参数2
+命令字和选项之间一般用空格间隔，选项和参数之间用空格间隔，参数1和参数2之间也是用空格间隔
+[选项]
+长选项： ls --help   --跟长选项   长选项一般是一个单词
+短选项:    ls -l	 -跟短选项    短选项一般是一个字母
+复合选项： ls  -lA    -多个短选项    
+
+选项，调控命令的执行方式
+短选项：-l、-A、-c、-d、……
+长选项：--color、--author、--sort、……
+多个短选项复合选项：-lh、-lA、-ld、……
+参数：命令的操作对象，如目录或文件
+
+辅助操作
+Tab键：自动补齐 
+快捷键
+Ctrl + u：清空至行首
+Ctrl + l：清空整个屏幕
+Ctrl + c：废弃当前编辑的命令行
+Esc + . ：粘贴上一条命令的最后一个参数
+
+ls /etc/sysconfig/network-scripts/ifcfg-eth0
+cat ESC+.
+
+cd  切换用户当前所在的目录
+绝对路径：以根目录开始写的路径
+相对路径：相对于当前目录来写的路径
+pwd  以绝对路径显示当前用户所在的目录
+ls   显示目录下的内容 
+
+lsblk  查看光驱名
+
+
+day03
+
+[root@localhost ~]# uname -r  //查看系统内核版本
+2.6.32-431.el6
+
+[root@slocalhost ~]# uname -a  //查看系统基本信息(系统，主机名，内核版本，内核时间，GNU)
+Linux localhost.localdomain 2.6.32-431.el6x86_64
+
+查看系统版本
+• /etc/redhat-release文件
+[root@localhost ~]# cat /etc/redhat-release
+Red Hat Enterprise Linux Server release 6.5 (Santiago)
+-------------------------------------------------------------------------------
+查看当前系统的主机名
+hostname //查看当前系统的主机名
+
+hostname  linxn    //将主机名临时修改成linxn,重起后失效
+
+hostname   //查看是否更改成功
+
+• ifconfig命令
+
+ifconfig ---查看当前系统所有的网卡信息
+
+ifconfig eth0   ---查看当前系统eth0网卡的信息
+
+查看CPU信息
+cat /proc/cpuinfo
+
+lscpu
+
+查看内存信息
+• free命令
+[root@localhost ~]# free -h
+ 
+total 内存总数
+used 已用内存数:
+free 空闲内存数:
+shared 共享内存数:
+buffers 缓存内存数:
+cached 缓存内存数:
+shared buff/cache available
+9.4M
+630M
+1.1G
+#系统级别总共内存使用数
+#系统级别纯粹空闲内存数
+#此项已废弃,一般为0
+#预留给准备写入硬盘做的缓冲;
+#预留给以后使用的缓冲,该数据已经从硬盘中读取;
+
+
+------------------------------------------------------------------------------------------
+打开classroom虚拟机(打开后不做任何操作)----提供自动分配IP地址的服务
+
+打开server虚拟机用户名root 密码是： redhat
+查看当前系统的IP地址
+172.25.0.11
+查看当前系统的主机名
+
+修改主机名为自己的名字
+查看server的系统版本及内核版本是什么
+uanme -a  && umname -r
+查看CPU信息
+lscpu && cat /proc/cpuinfo
+
+cat /proc/meminfo   查看内存大小
+
+free -h    
+init：
+       0 :关机
+       1：无网络的单用户模式
+       2：单用户模式
+       3：多用户模式---
+       4：没有分配
+       5： 图形界面
+       6：重起
+
+关机的命令操作
+• 常见用法
+[root@localhost ~]# shutdown -h  11：50
+[root@localhost ~]# poweroff
+[root@localhost ~]# init 0
+
+重起
+reboot
+init 6
+-------------------------------------------------------------------------------------------------
+文档管理
+ 就像一颗倒挂的树
+—路径之间分隔符: /
+—分层次深入
+
+/bin、/sbin  主要用途存放基本命令、管理工具
+/boot  存放系统启动文件,包括内核、引导配置等
+/dev   存放各种设备文件
+/etc   存放系统中的各种配置文件
+/usr   存放共用的、只读的用户数据
+/root  管理员root的家目录(默认的工作目录)
+/home  存放各普通用户的家目录(比如 /home/zhangsan)
+
+cd  切换用户当前所在的目录
+
+绝对路径：以根目录开始写的路径
+相对路径：相对于当前目录来写的路径
+cd  -    //返回到上次所在的目录( “-”只对cd命令有效)
+.   //代表当前目录       (都可以使用)
+..  //代表上一级目录    (都可以使用)
+
+# cd /etc/sysconfig/network-scripts/
+# cd ..  返回上一层目录
+# pwd   --->   /etc/sysconfig
+#  ls ../   显示上一层目录的内容
+
+#ls
+蓝色：文件夹
+黑色：文本文件
+红色：压缩包
+绿色：可执行文件
+浅蓝色：软连接（快捷方式）
+
+linux隐藏文件名字全部是以“.”开头
+ls 
+ -l   显示详细信息
+ -A	显示隐藏文件
+ -d   显示目录本身(而不是内容)的属性,一般与“-l”选项连用
+ -h   提供易读的容量单位(K、M等)
+ -R   递归显示
+使用通配符
+• 主要模式
+—*:匹配任意(0个或多个)多个字符
+—?:匹配单个字符
+—[a-z]:匹配连续多个字符中的一个
+—{a,min,xy}:匹配不连续的多组字符串
+------------------------------------------------------------------------------------------
+mkdir  路径/文件夹名称
+mkdir  -p aa/bb    递归创建，如果有aa文件夹则在aa文件夹下创建bb
+如果没有aa文件夹则先创建aa文件夹然后在在aa下创建bb
+
+touch命令
+—用途:新建空文件,或更新文件时间戳
+—格式:touch /root/文件名...
+
+touch /root/hehe
+ln — Link
+—用途:为指定的目录或文件添加快捷方式(也称为软链接)
+—格式:ln [-s] 原文件... 链接文件路径
+
+mkdir -p /aa/bb/cc/dd/ee/ff
+echo 1 > /aa/bb/cc/dd/ee/ff/1.txt
+cat /aa/bb/cc/dd/ee/ff/1.txt 
+ln -s /aa/bb/cc/dd/ee/ff/1.txt    /root/1.txt
+echo 2 >> /root/1.txt
+cat /aa/bb/cc/dd/ee/ff/1.txt 
+
+文档管理
+—— 复制/删除/移动文档
+复制文档
+• cp — Copy
+—格式:cp [选项]... 原文件... 目标路径
+• 常用选项
+-r:递归复制整个目录
+-p:保持原文件的属性不变
+复制多个目标时，把最后一个参数作为目标
+
+删除文档
+• rm — Remove
+—格式:rm [选项]... 文件或目录...
+• 常用选项
+-r:递归删除整个目录
+-f:强制删除,不提示
+
+移动/改名文档
+• — Move
+—格式:mv [选项]... 原文件... 目标路径
+• 常用选项
+-f:强制覆盖,不提示
+\临时取消别名（针对cp）命令前加\
+ mv    /root/aa   /opt/bb
+
+命令字    源文件       要剪切到哪
+
+在Linux中你怎样去从重名一个文件？
+路径不变的移动（mv）就是重命名
+
+mv /mnt/a   /mnt/b
+
+touch /root/a  /root/b
+mv /root/a /root/b
+
+mv：是否覆盖"b"？ 
+
+mv  -f  /root/a /root/b
+
+more
+less
+cat
+head  -20
+tail  -20
+cat /etc/passwd | grep 
+
+cat /etc/passwd   //查看用户信息文件
+cat /etc/shells	  //查看解释器文件
+cat /proc/cpuinfo //查看CPU信息文件
+cat /etc/redhat-release  //查看系统信息文件
+
+cat  -n  /etc/passwd
+cat  -n  /etc/shells
+
+分页阅读工具
+• more命令
+—用法:more 文件名...
+—不足:往回翻页不方便
+• 基本交互操作
+—按Enter键下翻一行、空格键下翻一屏
+—按 q 或 Q 键退出
+—按/ 键向后查找特定关键字
+  more /etc/passwd
+
+管道“|” 将前面命令的输出结果给后面的命令当作参数
+ls --help  |   more
+ls --help  |   less
+
+echo 自定义输出信息
+echo 1
+echo hello
+
+覆盖重定向   >     
+echo 1 >  /root/xixi
+echo "123456"
+追加重定向   >>
+echo 2 >> /root/xixi
+
+[root@room9pc01 ~]# head -1 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+[root@room9pc01 ~]# cat /etc/passwd | head -1
+root:x:0:0:root:/root:/bin/bash
+
+cat /etc/passwd | head -1  > xixi
+
+tail -1 /etc/passwd
+tail   /etc/passwd
+
+请输出/etc/passwd文件中第20行到30行的内容
+cat -n /etc/passwd | head -30 |tail -10  > /root/pass
+---------------------------------------------------------------------------------------------------
+运行方式
+vim  
+vim  新的文件               // 他会自动创建一个文件
+vim  已经存在的文件    //打开此文件
+			（Esc）---------------> 插入模式(i,a,o,C)
+vim 命令模式
+			（Esc）---------------> 末行模式（：）
+i:光标前插入
+a:光标后插入
+o:另起一行插入
+C:删除光标后所有内容并插入
+
+在末行模式中：保存 w    退出 q  
+			保存并退出 wq，x  
+			不保存退出   q!
+
+[root@room9pc01 ~]# cp /etc/passwd /root/ #准备素材 
+
+vim /root/passwd
+命令模式下操作
+移动光标	上、下、左、右
+翻页		PgDn键、PgUp键	向下/上翻动一整页内容
+光标行内跳转	Home键、End键	跳转至行首、行尾
+光标行间跳转	gg	跳转到文件的首行 
+		G	跳转到文件的末尾行 
+
+复制	yy、#yy	复制光标处的一行、#行
+粘贴	p	粘贴到光标处之后
+删除	x 或 Delete键	删除光标处的单个字符
+dd、#dd	剪切光标处的一行、#行，剪切后不粘贴就是删除。
+u   文档返回到上一次操作前界面
+
+命令模式下
+文本查找	/word	向后查找字符串“word” 
+n、N	跳至下一个/上一个找到的字符串 
+
+末行模式下：
+行内替换
+:s/old/new 	      替换当前行第一个“old”
+:s /old/new/g 	替换当前行所有的“old”
+
+区域内替换  
+:n,m s/old/new/g 	替换第n-m行所有的“old"
+:%s/old/new/g 	替换文件内所有的“old”
+
+vim教程工具 —— vimtutor 
+------------------------------------------------------------------------------------
+文档查找：
+alias byebye="poweroff"    别名(外号)
+alias 外号名="执行的命令"
+alias network="ls /etc/sysconfig/network-scripts/"
+                             
+执行别名：network
+unalias  network     取消别名
+刷新别名：关闭端口从开
+
+classroom    : 提供服务的，ip地址，web，
+server	： 联系情况下作为服务器使用，搭建一些简单的服务
+desktop	： 用来测试访问server服务有没有搭建成功
+
+redhat 给达内定做
+RHCE --红帽认证工程师
+
+rht-vmctl reset classroom      //还原虚拟机classroom
+rht-vmctl reset server		//还原虚拟机server
+rht-vmctl reset desktop		//还原虚拟机desktop
+
+alias c="rht-vmctl reset classroom"
+alias s="rht-vmctl reset server"
+alias d="rht-vmctl reset desktop"
+
+echo $PATH
+/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/root/bin
+
+ls --->  程序文件 -------> 解释器  ------> 内核 ------> 调用硬件
+					 shell
+					 cat /etc/shells
+
+命令分为
+           内部命令：  解释器自带的命令
+	   外部命令：  安装一些程序或者下载一些脚本生成的命令
+计算机只识别二进制数字（0，1）
+
+
+find查找
+准备实验环境
+-type  指定你要查找的文件类型(目录 d，文件 f，快捷方式 l)
+-name  "查找名称"
+-size  【-+】文件大小
+-user  用户名
+
+find -type d  查找当前
+find  /mnt  -type d  #查找是目录
+find  /mnt  -type f  #查找是文件
+find  /mnt  -type l -name "etc"   #在mnt下查找叫etc的快捷方式
+find -exec  
+以{}代替每一个结果，逐个处理，以\;结束
+find /boot/ -name "vm*" -exec cp -r {} /opt \;  
+
+利用find查找所有用户 student 拥有的必须是文件,把它们拷贝到 /root/findfiles/ 文件夹中
+find -user student -type f  -exec cp  {} /root/findfiles \;
+
+利用find查找/boot目录下大于10M并且必须是文件，拷贝到/opt
+find /boot -type f -size +10M -exec cp {} /opt \;
+
+利用find查找/boot/目录下以 vm 开头且必须是文件，拷贝到/opt
+find /boot -type f -name "vm*" -exec cp {} /opt \;
+
+ls -lh /iso/
+find /iso/ -size -5G
+find /iso/ -size +3G
+find /home/ -group student
+
+限制目录查找的深度（最大层数）
+-maxdepth
+find /etc/ -maxdepth 1 -mane "*.conf"
+
+用法： -mtime  [+|-]天数
++ n天之前、- n天之内
+
+搭建实验环境
+mkdir /ll
+echo xixi > /ll/xixi
+ls -l /ll/
+find  /ll/  -mtime -1  
+在/ll文件夹中查找最近在一天之内修改的文件
+
+find /iso/  -mtime  +200  
+在 /iso 文件夹中查找最近在200天以外的
+
+grep工具
+用法：grep  [选项]...  "关键词"  目标文件
+常用命令选项
+-i：查找时忽略大小写
+-v：反转查找，输出不符合查找条件的行 
+-c : 统计匹配条件的行共有多少行
+
+准备环境
+cp /etc/passwd /root
+echo ROOT >> /root/passwd
+
+grep   "root" /root/passwd
+grep   "ROOT" /root/passwd
+grep  -i  "root" /root/passwd
+grep -iv "ROOT" /root/passwd
+grep  "bash" /root/passwd
+grep -v "bash" /root/passwd
+
+基本正则表达式
+^...：表示以 ... 开头
+...$：表示以 ... 结尾
+^$：表示空行
+
+^a   以a开头的行  ^root$
+a$   以a结尾的行  ^$ 
+^$      空行
+
+grep   "root" /etc/passwd
+grep   "^root" /etc/passwd
+grep   "bash$" /etc/passwd
+grep   "T$" /etc/passwd
+vim    passwd
+cat    passwd
+grep   "^$" /etc/passwd
+grep -v  "^$" /etc/passwd
+
+只查看/etc/chrony.conf文件中不以#开头的行
+grep -v "^#" /etc/chrony.conf
+grep -v "^#" /etc/chrony.conf | grep -v "^$" 
+
+grep "bash$" /root/passwd
+grep -c "bash$" /root/passwd
+
+统计/etc/passwd 中不以bash结尾的共有多少行
+grep -vc "bash$" /etc/passwd
+
+在文件 /usr/share/dict/words 中查找到所有包含字符串 seismic 的行,将输出信息,写入到/opt/nsd.txt
+grep seismic /usr/share/dict/words >> /opt/nsd.txt
+
+grep工具可以对文本文件作过滤，也可以对输出信息做过滤("|")
+[root@room9pc01 ~]# grep -v -c "bash$" /root/passwd
+59
+[root@room9pc01 ~]# cat /root/passwd | grep -vc "bash$"
+59
+grep -v ^$ /etc/login.defs | grep -v ^$
+
+grep -v ^$ /etc/login.defs | grep -v ^$ > /opt/b.txt
+vim /opt/b.txt 
+
+
+root ---> 超级管理员 ----> 家目录 /root(别墅)
+tom  ---> 普通用户    ----> 家目录 /home/tom (居民楼)
+
+工作组---> 进行权限的管理
+用户可以继承工作组的权限
+唯一标识：UID  GID    UID管理     GID组
+管理员的UID永远为：UID 0
+普通用户的UID默认从：UID 1000起始
+组：基本组(私有组)  附加组（从属组） 
+linux  一个用户至少属于一个组
+基本组（私有组）  建立用户的时候会随之创建一个同名的组帐号
+附加组（从属组） 额外添加的组
+组账号   useradd  tom   tom
+
+echo 123456 | passwd --stdin wangwu
+创建wangwu赋予密码123456
+
+usermod  -u -s -G -g   (GID) (解释器)(基本组)(附加组)
+groupadd   组名   创建组  
+groupadd stugrp  创建组
+grep stugrp /etc/group  #查询组用户
+stugrp:x:1003:
+组名：组的密码占位符：组的UID：组的成员列表
+gpasswd -a  添加组用户
+gpasswd -d  删除组用户
+
+gpasswd -a natasha stugrp
+gpasswd -a  用户     组名
+
+grep stugrp /etc/group  
+stugrp:x:1003:natasha
+
+groupdel  组名  删除组
+
+权限和归属
+
+drwxr-xr-x. 3 root    root   4096       3月  13 22:30        
+	          所属者    所属组   大小       最后一次的修改时间
+
+d=文件夹    l=代表这是一个快捷方式     - =代表这是一个文件
+
+drwx  | r-x  | r-x   
+  u      g      o
+所属者   所属组   其他人
+
+rwx   ： 所有者的权限位
+r-x	： 所属组的权限位
+r-x	： 其他人的权限位
+r= 读权限
+w= 写权限
+x= 执行权限
+root ：所有者是root用户 
+root ：所属组是root组
+
+chmod   添加权限
+chhod  a=rwx  用户    修改所有用户的权限
+chmod  [+-=][rwx]  文件...
+chmod  ugo=rwx  文件
+chmod  u=w,o=x  文件 
+chmod  ugo=---  文件
+
+chmod -R  递归设置
+chmod -R o=--- /nsd01   nsd01下的所有文件的权限为---
+
+设置文档归属
+chown  属组 文档             
+chown  所属者：所属组 文档   #改变文档的所属者和所属组
+chown ：所属组  文档           #改变文档的所属组
+
+权限    所有者>所属组>其他人  匹配及停止
+
+set GID 
+适用于目录，set GID可以使目录的文档自动设置与父目录相同的权限
+继承父目录的所有属组身份
+chown -R 递归更改目录下的所有已建的文档
+chmod g+s 目录(给目录加权限)   更改目录下新建的组属性
+
+mkdir /nsd08
+chown :tarena /nsd08
+ls -ld /nsd08
+drwxr-xr-x. 2 root tarena 6 7月   5 14:44 /nsd08
+chmod g+s /nsd08 
+ls -ld /nsd08
+drwxr-sr-x. 3 root tarena 18 7月   5 14:45 /nsd08
+
+acl访问控制列表
+acl访问策略
+能够为个别用户、个别组设置独立的权限
+setfacl -m u：用户：权限【rwx】 文档
+setfacl -m u：tom:rwx  /nsd01 单独设置个别用户
+ls -ld /mnt/xixi
+drwxr-s---+ 3 root lisi 32 Jul  6 18:00 /mnt/xixi
+getfacl 文件  查询谁获得什么权限
+setfacl -m u：用户：权限【rwx】 文档
+setfacl -m u：tom:--- /nsd01  单独拒绝一个用户
+setfacl -b  文档   清空权限
+setfacl -x u：用户： 文档   删除权限
+
+
+
+tar备份和恢复   打包及压缩
+1.方便对零散文档的管理     2.减小空间的占用
+
+linux独有的压缩的格式
+gzip--->.gz      bzip--->.bz2     xz--->.xz
+
+打包
+tar  [选项]  /路径/打包之后压缩包的名字    /被压缩的原文件
+
+解包
+tar  [选项]  /路径/打包之后压缩包的名字  -C   释放位置
+
+tar选项
+-c  创建归档  
+-x  释放归档
+-f  制定归档文件名称
+-z，-j，-J：调用gz、bz2、xz格式的工具进行处理
+-t  显示归档中的文件清单
+-C（大写）   释放位置
+-p  保持归档的绝对路径
+xf  解包
+tf  查看包
+
+tar -zcf /路径/打包之后压缩包的名字   /被压缩的原文件   #创建名为gz的归档压缩包
+tar -jcf /路径/打包之后压缩包的名字   /被压缩的原文件  #创建名为bz2的归档压缩包
+tar -Jcf /路径/打包之后压缩包的名字   /被压缩的原文件  #创建名为xz的归档压缩包
+tar -xf  /路径/打包之后压缩包的名字  -C  /释放的位置   #释放压缩包到指定位置
+tar -tf  文件   #查看压缩包内容
+
+
+NTP时间同步
+服务：NTP服务器为客户机提供标准时间
+NTP客户机需要与NTP服务器保持沟通
+服务端：classroom.example.com
+客户端：server0
+1.安装软件chrony，与服务端沟通时间的软件
+yum -y install chrony
+2.修改主配置文件
+vim /etc/chrony.conf    配置服务器(classroom.example.com)
+3.重起chronyd服务
+daemon：守护进程
+1.查看时间:date
+ date -s "年-月-日 时-分-秒"  更改时间
+systemctl restart chronyd   #重起服务
+systemctl enable chronyd    #设置服务随机自动启动
+
+timedatectl set-ntp true
+timedatectl status    
+date
+cron计划任务
+用途：按照设置的时间间隔为用户反复执行某一项固定的系统任务
+软件包：cronie、crontabs
+系统服务：crond
+日志文件：/var/log/crond
+
+
+如何编写crontab任务记录
+crontab -e     设置任务记录
+分 时 日 月 周   任务命令行
+*  *  *  *  *    
+30 8  *  *  *
+周1-6  周1，3，5，7
+date >> /opt/time.txt   指定文件夹记录时间
+除root之外，他人用户无法查看日志
+
+*    匹配范围内任意时间
+，   不连续的时间点
+-    连续的时间范围
+/n  指定时间频率
+
+crontab -l    查询计划任务
+crontab -l -u root    查看是什么用户来运行计划任务
+
+建立任务时使用绝对路径
+which #查找命令对应的程序文件放置的地方
+which cd
+which pwd
+which ls
+
+crontab -e  -u 用户名  编辑
+crontab -l  -u 用户名  查看
+crontab -r  -u 用户名  删除
+
+
+使用lDAP认证
+ RHCSA   RHCE   RHCA
+ 管理员    工程师   架构师
+LDAP服务器：网络用户认证
+由服务器来集中存储并向客户端提供信息
+
+网络用户：由LDAP提供信息
+本地用户：
+
+一 搭建LDAP服务器  classroom.exampel.com
+二 搭建客户端，虚拟机server
+1.安装软件sssd
+  安装软件authconfig-gtk
+
+2 选择LDAP
+dc=example,dc=com     指定服务端域名
+classroom.example.com    指定服务端主机名
+
+3 勾选TLS加密
+使用认证加密：http://classroom.example.com/pub/example-ca.crt
+
+4 重新加载 systemctl restart sssd 本地加载
+         systemctl enable sssd  网络加载
+
+5 验证  grep ldapuser1 /etc/passwd
+      id ldapuser0
+
+
+家目录漫游
+共享文件夹
+什么是NFS共享
+由NFS服务器将指定的文件夹共享给客户机
+ping 通客户端和服务端
+1.查看服务端共享   showmount -e classroom.example.com
+2.访问共享文件夹
+mkdir /home/guests
+mount classroom:/home/guests /home/guests
+ls /home/guests
+
+
+附加权限
+1.set UID
+附加在属主的x位上
+属主的权限标识会变成s
+适用于可执行文件，set UID可以让使用者具有文件属主的身份及部分权限
+mkdir /public
+chmod a=rwx /public
+ls -ld /public/
+drwxrwxrwx. 2 root root 6 7月   6 11:14 /public/
+chmod u+s /public/
+ls -ld /public
+drwsrwxrwx. 2 root root 6 7月   6 11:14 /public
+
+
+2.sticky Bit
+附加其他人的x位上
+其他人的权限标识会变成t
+适用于开放w权限的目录
+可以阻止用户滥用w写入权限
+mkdir /public
+chmod a=rwx /public
+ls -ld /public/
+drwxrwxrwx. 2 root root 6 7月   6 11:14 /public/
+chmod o+t /public/
+ls -ld /public
+
+
+useradd 选项
+-u：指定 UID 标记号
+-d：指定宿主目录，缺省为 /home/用户名
+-g、-G：指定所属的基本组、附加组
+-s：指定用户的登录Shell
+
+userdel //默认不会删除用户的家目录
+userdel -r  //连家目录一块删除
+
+/etc/passwd   :存放用户信息
+
+root:x:0:0:root:/root:/bin/bash
+用户名：密码占位符：UID号：GID号：注释信息：家目录：解释器
+
+UID号：用户账户的身份证号
+GID号：所属基本组的身份证号
+cat /etc/shadow  存放密码信息的文件
+
+Student:
+$6$cYdnO/I$6AoYtW0.6xxfar2I4Rkbp1XR6Zyl4EP4VIv2pPKhlYPe5WkpG6h4fx.1x3lwFflb6kjK3cZH5Xs9qV3ucd0
+
+root:$6$hxVVFITn$saZDr0FC7vqQcMSoDltTmbet/zcmzl8sxPHt4zTrWNFjkvzYqOn0twlQ82TSt.SVcY70rgWJmboDyu866v7ld0
+Taren1
+
+本地账户的数据文件
+/etc/passwd、 存放用户信息
+/etc/shadow	  存放用户的密码信息
+/etc/group、   存放组的信息
+
+useradd 用户名(不可以是特殊字符，不可以是汉字)
+useradd tom //添加一个名为tom的普通用户
+
+id tom    //查询用户信息
+
+passwd tom  //更改tom的密码
+
+非交互式更改密码
+echo 123456 | passwd --stdin root
+
+su - 用户名    临时切换用户
+
+系统默认设定手动添加的用户ID号为1000以后的数字
+
+cat /etc/passwd   存放用户信息
+cat /etc/shadow   存放用户的密码信息
+cat /etc/group    存放组的信息
+
+useradd -u 2000 xixi   
+//创建用户xixi 并手动指定uid号为2000
+
+id xixi   //验证，查看xixi用户的基本信息
+
+useradd -d /xixi  hehe  
+//创建用户hehe并指定其家目录在“/xixi”文件夹中
+
+tail -1 /etc/passwd //查看用户信息文件，验证
+
+useradd -g tom aa   
+
+//添加一个用户aa设置他的基本组为tom组
+ id  aa  //验证，查看aa用户的基本信息
+
+useradd -G tom  bb
+//添加一个用户aa设置他的附加组为tom组
+
+id bb	//验证，查看aa用户的基本信息
+cat /etc/group	//验证，组信息文件
+
+-s  指定解释器
+
+cat /etc/shells
+
+useradd -s /sbin/nologin   cc
+//创建用户cc使用的shell为/sbin/nologin
+tail -1 /etc/passwd
+//验证，查看用户信息文件
+
+添加用户stu02，指定基本组为users,附加组为tom,UID为2500，家目录在/opt/stu02，登陆的shell为/bin/bash,stu02的密码为123456
+useradd -g users -G tom -u 2500 -d /opt/stu02 -s /bin/bash stu02
+
+passwd stu02
+--------------------------------------------------------------------------------------------
+
+
+who  //查看当前登陆系统的用户都有谁
+
+
+mkdir /xixi    //在根目录下创建一个文件夹叫xixi
+cd /xixi/      //进入到xixi文件夹下
+touch hehe     //在xixi文件夹下创建一个空文件叫hehe
+ls -l          //查看xixi文件夹下所有内容的详细信息
+cd  /          //从xixi目录下回到 / 目录下 
+ls -ld xixi/    // 查看xixi文件夹的详细信息
+chmod a=rwx xixi/	//把xixi文件夹的权限更改成完全权限 
+ls -ld xixi    		//查看xixi目录本身权限是否修改成功
+ls -l  xixi			//查看刚才那条命令会不会将xixi文件夹下的文件一块修改权限
+
+chmod -R a=rx xixi/   //递归修改xixi目录的权限
+ls -l xixi/		   //查看xixi目录本身权限是否修改成功
+ls -ld xixi/	
+//查看刚才那条命令会不会将xixi文件夹下的文件一块修改权限
+     
+drwxr-xr-x 2 tom root 4096 6月  25 11:24 a
+
+useradd tom     #为系统创建一个普通用户tom
+mkdir /a 	   #在根目录下创建一个a文件夹     
+ls -ld /a       #查看a文件夹的详细信息
+chown  tom  /a  #将a文件夹的所有者更改成tom用户
+ls -ld /a       #查看a文件夹的详细信息
+
+chown  root:tom  /a   
+#将a文件夹的所有者更改成root用户，所属组更改为tom用户
+
+ls -ld a	     #查看a文件夹的详细信息
+chown  :root  /a  #将a文件夹的所属组更改为tom用户
+ls -ld /a         #查看a文件夹的详细信息
+
+touch /a/a.txt    #在a目录下创建一个a.txt的空文件
+
+chown tom:tom /a  
+#尝试修改a目录的所有者信息看a.txt会不会发生改变
+ls -ld  /a   #查看a目录是否有改变
+ls  -l  /a   #查看目录下的文件有没有改变
+chown -R tom:tom  /a   #进行递归修改a文件夹的所有者&所属组
+ls  -l  /a   #查看目录下的文件有没有改变
+
+[root@room9pc01 ~]# clone-vm7 --->
+Enter VM number:1 ---->虚拟机编号（1-99）回车
+
+打开虚拟机
+login：root
+passwd：123456
+
+[root@localhost ~]# init  5
+
+free -h                    //查看当前系统的运行内存空间
+cat /etc/redhat-release   //查看当前系统的版本信息
+hostname                  //查看当前系统的主机名
+hostname  linxn  	//临时更改主机名为linxn，重起失效
+关闭终端从新查看
+hostname  		//查看主机名是否更改成功
+
+永久更改主机名
+vim /etc/hostname
+
+按i键进入插入模式------>安Esc键退出插入模式-----> :wq --->回车
+						保存并退出	
+
+注：修改配置文件后默认不会改变当前的主机名，需要从新启动计算机才会从新载入生效，
+如果不想重起计算机可以使用命令(hostname)先修改成临时的。
+
+为rh7_node01的eth0网卡配置192.168.5.1
+为rh7_node02的eth0网卡配置192.168.6.2
+配置临时的IP地址
+ifconfig   //查看当前主机的网卡
+ifconfig  eth0  192.168.4.1   //为eth0网卡配置一个IP地址
+ifconfig  eth0     //查看IP地址是否配置成功
+
+nmtui  //打开配置IP地址的伪图形
+ifdown eth0   //先关闭eth0网卡
+ifup  eth0   //启用eth0网卡配置
+----------------------------------------------------------------------------------------------------
+8：30-12：00       上午
+12：00-14：00   
+14：00：18：00   下午
+18：00-19：00
+19：00-20：45    晚自习
+8：30
+上课交手机
+1-5
+
+1-6 --->
+周五：  18：10-19：30
+
+周六：没有晚自习
+
+node01:  192.168.4.1    node01
+node02:  192.168.4.2    node02
+北京总部
+
+成都分部	 服务器               
+南方：电信宽带   
+
+北方：联通宽带
+
+IDC机房
+
+远程操作：
+ssh          root@192.168.4.1
+命令字  	 以什么用户进行登陆@登陆到的主机地址
+
+
+ctrl+shift+t ：在当前终端窗口新开一个终端
+
+Alt+“n”      ：跳转到第N个终端
+
+firefox
+ssh -X  root@192.168.4.1
+
+注意：
+      1.远程别人的Linux想要调用图形首先要保证自己支持图形化工具
+      2.当fireiox调用失败，可以看看在被远程端是否已经打开了这个程序。
+
+ssh远程传输文件
+
+scp -r /root/xixi.txt  root@192.168.4.1:/root
+------------------------------------------------------------------------
+[root@room9pc01 ~]# echo 1 > /root/xixi
+
+[root@room9pc01 ~]# scp  /root/xixi root@192.168.4.1:/root
+ssh root@192.168.4.1
+ls /root/xixi
+exit 退出
+
+[root@room9pc01 ~]#  mkdir /root/a
+[root@room9pc01 ~]#  echo 1 > /root/a/aa
+[root@room9pc01 ~]#  echo 2 > /root/a/ab
+
+[root@room9pc01 ~]# scp -r /root/a  root@192.168.4.1:/
+
+scp     root@192.168.4.1:/root/xixi.txt  /root/
+命令字     以谁的身份下载@在那下载：下载的具体位置      下载到当前的那个地方
+----------------------------------------------------------------------------------------------------
+在Linux系统中安装软件包
+
+在win  *.exe结尾
+
+在Linux  *.rpm  rpm包&&源码包
+				    获得途径：一个是红帽系统光盘自带
+			                      直接上网搜索{rpm&&源码包}
+文件名的一般组成
+软件名-版本信息.操作系统.硬件架构.rpm
+
+bash-4.1.2-15.el6_4
+
+firefox-17.0.10-1.el6_4.i686.rpm
+
+挂载点(目录)
+
+山西--->煤------->地下
+
+洞口
+[root@node01 ~]# mkdir /dvd   #创建挂载点(目录)
+[root@node01 ~]# ls /dvd/     #查看挂载点有没有东西
+[root@node01 ~]# mount  /dev/cdrom    /dvd  
+#将光盘文件挂载到/dvd目录下
+vmware
+
+df   -h     查看所有挂载信息
+
+[root@node01 ~]# ls /dvd/  
+ #再次查看挂载点下的文件变成了光盘的文件
+
+[root@node01 ~]# cd /dvd/Packages/    
+//进入光盘中存放软件包的目录
+[root@node01 ~]# ls | grep vsftpd
+//查找一个软件包
+[root@node01 Packages]# 
+cp vsftpd-3.0.2-22.el7
+//拷贝vsftpd软件包到root目录下
+
+查询通过RPM方式安装的软件包信息
+用法：rpm  -q[子选项]  [软件名称]
+常用的子选项
+-a：列出已安装的所有软件包
+-i：查看指定软件的详细信息
+-l：查看指定软件的文件安装清单 
+-c、-d：仅列出清单中的配置/文档文件
+
+rpm -q vsftpd
+rpm -ivh /root/vsftpd-3.0.2-22.el7
+rpm -q vsftpd
+rpm -qa 
+rpm -qi vsftpd   #查看指定软件的详细信息
+rpm -ql vsftpd   #查看指定软件的文件安装清单 
+rpm -qc vsftpd   #仅列出清单中的配置文件
+rpm -e  vsftpd   #卸载vsftpd软件包
+--------------------------------------------------------------------------------------
+[root@node01 ~]# rpm -e vsftpd
+[root@node01 ~]# rpm -q vsftpd
+
+黄狗升级管理器(yum仓库)
+ftp://
+file://
+http://classroom.example.com/content/rhel7.0
+手写YUM仓库的配置文件
+/etc/yum.repos.d/*.repo
+
+[root@node01 ~]# vim /etc/yum.repos.d/xixi.repo
+
+[redhat-7.4]             #给这个仓库定义一个标示
+name=rhel7		      #给这个仓库起一个名字
+enabled=1		      #启用当前这个仓库的配置文件
+baseurl=http://classroom.example.com/content/rhel7.0/x86_64/dvd/
+#指定你的软件源在什么地方(可以通过http&ftp&file访问)
+gpgcheck=0		      #不验证红帽的密钥信息
+
+yum -y install mariadb   #不询问安装包
+
+umount  /dvd           # 卸载光盘
+	
+yum clean all            #清除YUM仓库的缓存
+yum list                 #查看当前仓库中的所有包
+yum repolist		#查看YUM仓库的信息
+文件系统： NTFS&FAT32&EXFAT
+
+开机自动挂载(本文件写错了会导致开不了机)
+ls /etc/fstab
+vim /etc/fstab
+
+你要挂载的设备   挂载到那     文件系统类型    以默认的挂载方式挂载
+/dev/cdrom    /dvd        iso9660      defaults  0  0
+
+mount -a   #读取/etc/fstab文件进行从新挂载
+
+[root@node01 ~]# yum -y install sssd
+//使用YUM程序安装sssd软件
+
+[root@node01 ~]# rpm -q sssd    #查询sssd软件包
+
+yum仓库进行卸载
+yum remove  sssd
+
+yum -y remove  sssd
+ 
+yum -y remove  不询问直接卸载
+
+回顾：
+rpm  search   #查询关键字
+rpm  -q   #查询软件包
+rpm  -qa  #显示系统已安装所有的软件包
+rpm  -ql  #查看安装软件包后系统生成的文件
+rpm  -qc  #查看安装软件包后系统生成的配置文件
+rpm  -e   #卸载软件包
+rpm  -ivh #安装软件包
+rpm  -qi  #查看指定软件的详细信息
+
+yum  repolist  #显示仓库的信息
+yum  list      #显示仓库中所有软件包
+yum  install   #安装软件包
+yum  remove    #卸载软件包
+yum  clean all  #清空YUM仓库的缓存
+-y  去掉交互式显示
+
+升级内核
+只适用与虚拟机
+下载软件包
+使用wget下载工具，默认下载到当前
+wget 软件包的URL网址
+http://classroom.example.com/content/rhel7.0/x86_64/errata/Packages/kernel-3.10.0-123.1.2.el7.x86_64.rpm
+----------------------------------------------------
+搭建WEB服务器（apache）
+
+www.baidu.com      
+
+192.168.4.1
+
+httpd：历史悠久，稳定，支持的模块的多
+nginx：并发访问量高：65535，更轻量级
+tomcat：对JAVA写的网页页面执行更快
+
+装包：yum -y install httpd
+配置 : vim /etc/httpd/conf/httpd.conf 
+
+:set nu
+
+95    ServerName www.baidu.com:80
+
+119行	DocumentRoot "/var/www/html"
+
+起服务:
+systemctl  start(启动)       httpd
+命令字     stop（停止）
+	   restart（重起服务）
+	   status （查看状态）   
+
+systemctl restart httpd
+systemctl status  httpd
+
+在node02操作
+firefox http://192.168.4.1  【有页面】
+firefox http://www.baidu.com 【找不到页面】
+定义临时DNS
+vim  /etc/hosts
+
+192.168.4.1   www.baidu.com
+
+firefox http://www.baidu.com 【打开默认页面】
+
+www.baidu.com/
+
+vim  /var/www/html/index.html
+<h1><font color="red">林晓宁</font></h1>
+
+firefox www.baidu.com
+
+VNCSERVER(node01)
+1.装包
+yum -y install tigervnc*    #安装提供远程桌面的软件包
+2.配置
+[root@node01 ~]# vncserver  
+VNCCLIENT(node02)
+3.起服务
+yum list | grep vnc
+yum -y install tigervnc
+
+在node02远程node01的桌面：
+[root@node02 ～]# vncviewer 192.168.4.1:1
+
+配置永久ip地址 子网掩码 网关地址
+网卡配置文件：/etc/sysconfig/
+命令配置
+nmcli connection 
+查看命令的网卡名
+nmcli connection show 
+
+
+配置IP地址，子网掩码，网关地址
+nmcli connection modify 'System eth0'
+ipv4.method manual 
+ipv4.addresses '172.25.0.4/24 172.25.0.254' 
+connection.autoconnect yes
+nmcli connection ’修改网卡识别名称‘
+ipv4.method manual  手工配置
+ipv4.addresses ‘配置IP地址/子网掩码 网关地址’
+connection.autoconnect   每次开机自动启用网络配置
+
+3.激活配置
+[root@A ~]# nmcli connection up 'System eth0'
+ 由于IP地址的变化,所以终端会失联,新开一个终端进行远程管理新的IP地址
+
+[root@room9pc01 ~]# ssh -X root@172.25.0.110
+[root@A ~]# 
+
+4.网关查看
+[root@A ~]# route
+..........   Gateway     .......... ..........
+ ..........           172.25.0.254      ..........
+
+#######################################################
+三  配置永久DNS地址,永久配置文件/etc/resolv.conf 
+[root@A ~]# vim /etc/resolv.conf 
+ nameserver  172.25.254.254
+[root@A ~]# cat /etc/resolv.conf
+
+ 验证:
+[root@A ~]# nslookup classroom.example.com
+[root@A ~]# nslookup server0.example.com
+[root@A ~]# nslookup desktop0.example.com
+
+########################################################
+
+查看真机IP地址
+ifconfig | head -2
+
+
+day05
+
+
+
+
